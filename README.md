@@ -1,36 +1,92 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# CineStream
 
-## Getting Started
+Catálogo de filmes que mostra onde assistir cada título nos principais serviços de streaming
+disponíveis no Brasil (Netflix, Prime Video, Disney+, HBO Max, Globoplay, Apple TV+,
+Paramount+, Mercado Play, Claro tv+, Crunchyroll e Looke). Construído com Next.js (App Router)
+e TypeScript, consumindo a API do TMDB.
 
-First, run the development server:
+## Pré-requisitos
+
+- Node.js 20+
+- npm
+
+## Obtendo o Read Access Token do TMDB
+
+1. Crie uma conta gratuita em [themoviedb.org](https://www.themoviedb.org/).
+2. Acesse **Configurações → API** ([link direto](https://www.themoviedb.org/settings/api)) e
+   solicite uma chave de API (tipo "Developer" é suficiente para uso não comercial).
+3. Na mesma página, copie o **API Read Access Token** (token longo, formato JWT) — é esse
+   token que o projeto usa, e não a "API Key" curta (v3 auth).
+
+## Configuração local
+
+1. Copie o arquivo de exemplo de variáveis de ambiente:
+
+   ```bash
+   cp .env.example .env.local
+   ```
+
+2. Preencha o `.env.local`:
+
+   ```bash
+   TMDB_READ_TOKEN=seu_token_de_leitura_do_tmdb
+   NEXT_PUBLIC_SITE_URL=http://localhost:3000
+   ```
+
+   - `TMDB_READ_TOKEN`: o Read Access Token obtido acima. Nunca comite este arquivo (ele já
+     está no `.gitignore`).
+   - `NEXT_PUBLIC_SITE_URL`: a URL pública do site, usada no `sitemap.xml`, no `robots.txt` e
+     em metadados de SEO. Em produção, é a URL do domínio na Vercel.
+
+3. Instale as dependências:
+
+   ```bash
+   npm install
+   ```
+
+## Rodando o projeto
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Abra [http://localhost:3000](http://localhost:3000) no navegador.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Testes
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Testes unitários e de componentes (Vitest):
 
-## Learn More
+```bash
+npm test
+```
 
-To learn more about Next.js, take a look at the following resources:
+Teste de ponta a ponta / smoke test (Playwright — builda e sobe o app real, consome a API
+real do TMDB, portanto exige um `TMDB_READ_TOKEN` válido em `.env.local`):
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+npm run test:e2e
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Na primeira execução do Playwright pode ser necessário instalar os navegadores:
 
-## Deploy on Vercel
+```bash
+npx playwright install chromium
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Deploy (Vercel)
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+1. Importe este repositório na [Vercel](https://vercel.com/new).
+2. Em **Project Settings → Environment Variables**, defina:
+   - `TMDB_READ_TOKEN`: o Read Access Token do TMDB (mesmo valor usado localmente).
+   - `NEXT_PUBLIC_SITE_URL`: a URL de produção do projeto na Vercel (ex.:
+     `https://seu-projeto.vercel.app`).
+3. A branch `main` é a que vai para produção — qualquer merge/push nela dispara um novo deploy.
+
+## Uso não comercial
+
+Este é um projeto não comercial, pessoal/de estudo, operando nos termos de uso da
+[API do TMDB](https://www.themoviedb.org/documentation/api/terms-of-use) e do plano
+[Vercel Hobby](https://vercel.com/docs/plans/hobby) (não destinado a uso comercial). Os dados
+de disponibilidade em serviços de streaming são fornecidos por [JustWatch](https://www.justwatch.com/)
+através da API do TMDB. Este produto usa a API do TMDB, mas não é endossado ou certificado
+pelo TMDB.
