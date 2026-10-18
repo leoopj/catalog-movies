@@ -19,11 +19,12 @@ Site **público** que funciona como catálogo dos filmes **disponíveis em strea
 
 ### Escopo da v1
 
-1. Listagem de filmes disponíveis em streaming (catálogo).
-2. Filtro por serviço de streaming (lista curada).
-3. Filtros de descoberta: gênero, faixa de ano, nota mínima, ordenação.
-4. Busca por título (retornando apenas filmes disponíveis nos serviços curados).
-5. Página de detalhes com sinopse, elenco, trailer e "Onde assistir".
+1. Vitrine na página inicial: filme em destaque + carrosséis "em alta" por serviço.
+2. Página Explorar: grade de filmes disponíveis em streaming com filtros.
+3. Filtro por serviço de streaming (lista curada).
+4. Filtros de descoberta: gênero, faixa de ano, nota mínima, ordenação.
+5. Busca por título (retornando apenas filmes disponíveis nos serviços curados).
+6. Página de detalhes com sinopse, classificação indicativa, elenco, trailer, "Onde assistir" e "Você também pode gostar".
 
 ### Fora da v1
 
@@ -60,12 +61,33 @@ Navegador ──► Next.js (Vercel) ──► API TMDB (v3)
 
 | Rota | Conteúdo | Fonte TMDB |
 |---|---|---|
-| `/` | Catálogo: grade de pôsteres + barra de filtros | `GET /discover/movie` |
-| `/filme/[slug]` (`[id]-[slug-do-titulo]`) | Detalhes do filme | `GET /movie/{id}?append_to_response=credits,videos,watch/providers` |
+| `/` | Vitrine: destaque + carrosséis | `GET /discover/movie` (uma chamada por carrossel) |
+| `/explorar` | Catálogo: grade de pôsteres + barra de filtros | `GET /discover/movie` |
+| `/filme/[slug]` (`[id]-[slug-do-titulo]`) | Detalhes do filme | `GET /movie/{id}?append_to_response=credits,videos,watch/providers,release_dates,recommendations` |
 | `/busca?q=` | Resultados de busca disponíveis nos serviços curados | `GET /search/movie` + `GET /movie/{id}/watch/providers` |
 | `/sobre` | Atribuição TMDB/JustWatch e aviso de que a disponibilidade pode variar | estática |
 
-### 4.1 Catálogo (`/`)
+### 4.0 Vitrine (`/`)
+
+Composição, de cima para baixo:
+
+1. **Destaque (hero):** o filme mais popular do momento entre os serviços curados (primeiro resultado do discover com todos os serviços curados que tenha imagem de fundo). Mostra imagem de fundo, título, ano, duração, gênero principal, nota, sinopse curta, o serviço onde está disponível e os botões "Ver detalhes" e "▶ Trailer". É um filme só, sem rotação automática; muda quando o cache renova (6 h).
+2. **Carrossel "Em alta em todos os serviços"**: discover com todos os serviços curados, ordenado por popularidade.
+3. **Seis carrosséis de serviço**, nesta ordem: Netflix, Prime Video, Disney+, Max, Globoplay, Apple TV+. Cada um: discover com `with_watch_providers=<id>`, ordenado por popularidade, 20 filmes, logo do serviço no título e link "Ver todos ›" para `/explorar?servicos=<id>`.
+4. **"Mais serviços"**: linha de atalhos (chips) para os demais serviços curados, cada um levando a `/explorar?servicos=<id>`.
+
+Regras:
+
+- Mesmos parâmetros fixos e tipos de disponibilidade padrão do Explorar (assinatura + grátis).
+- Cada pôster mostra a nota (canto superior esquerdo) e o selo do serviço (canto superior direito).
+  - Nos carrosséis de serviço, o selo é o do próprio serviço (sem chamada extra).
+  - No destaque e no carrossel "Em alta em todos os serviços", o discover não informa o serviço. Por isso, consulta-se `watch/providers` de cada um desses filmes (cache 24 h) e mostra-se o primeiro serviço curado em que ele está disponível, seguindo a ordem da lista curada.
+- Os carrosséis abaixo da dobra são renderizados em streaming (`Suspense`), para a página abrir rápido.
+- Custo por renovação de cache (6 h): 8 chamadas de discover. Custo a cada 24 h: até 21 consultas de provedores (destaque + carrossel geral).
+
+### 4.1 Explorar (`/explorar`)
+
+Layout: faixa horizontal com os logos dos serviços curados no topo (chip "Todos" + um chip por serviço, rolagem lateral no celular), seguida de uma linha de menus compactos (Gênero, Ano, Nota, ☐ Aluguel/compra, Ordenação à direita) e a grade de pôsteres na largura toda (2 colunas no celular até 6 no desktop).
 
 Parâmetros fixos do discover: `watch_region=BR`, `language=pt-BR`, `include_adult=false`.
 
@@ -83,11 +105,15 @@ Parâmetros fixos do discover: `watch_region=BR`, `language=pt-BR`, `include_adu
 
 ### 4.2 Detalhes (`/filme/[slug]`)
 
-- Pôster, imagem de fundo, título, ano, duração, gêneros, nota, sinopse.
+Layout "cabeçalho cinematográfico": imagem de fundo em largura total com degradê, pôster sobreposto à esquerda e, ao lado, título, metadados, gêneros e botão "▶ Trailer". Abaixo, em uma coluna: sinopse e direção → "Onde assistir no Brasil" → elenco principal → "Você também pode gostar". No celular, o pôster fica acima do título.
+
+- Pôster, imagem de fundo, título, ano, duração, gêneros, nota (com número de votos), sinopse, direção.
+- Classificação indicativa brasileira: `release_dates` da região BR (primeiro `certification` não vazio). Se não houver, o campo é omitido.
 - Elenco principal: até 10 nomes com foto.
 - Trailer: primeiro vídeo `type=Trailer`, `site=YouTube`; busca em pt-BR com fallback para inglês (`include_video_language=pt,en`). Player carregado só ao clicar.
 - "Onde assistir" (região BR) agrupado em **Assinatura**, **Grátis**, **Aluguel**, **Compra**. Cada logo leva ao link "onde assistir" fornecido pelo TMDB (página TMDB/JustWatch).
   - **Limitação conhecida:** a API do TMDB não fornece links diretos para o filme dentro de cada serviço.
+- "Você também pode gostar": até 20 filmes de `recommendations`, filtrados com a mesma regra da busca (consulta de `watch/providers` por filme, cache 24 h; só exibe os disponíveis em assinatura/grátis em algum serviço curado). Se nenhum restar, a seção é omitida. Falhas individuais omitem o filme.
 - Slug incorreto → redirect para o slug canônico. ID inexistente → 404.
 
 ### 4.3 Busca (`/busca?q=`)
@@ -109,7 +135,8 @@ Netflix, Prime Video, Disney+, Max, Globoplay, Apple TV+, Paramount+, Mercado Pl
 src/
   app/
     layout.tsx                # cabeçalho com busca, rodapé com atribuição
-    page.tsx                  # catálogo
+    page.tsx                  # vitrine
+    explorar/page.tsx         # catálogo com filtros
     loading.tsx, error.tsx, not-found.tsx
     filme/[slug]/page.tsx
     busca/page.tsx
@@ -120,14 +147,16 @@ src/
     tmdb/client.ts            # fetch autenticado, revalidate, timeout, erros tipados
     tmdb/types.ts             # tipos das respostas do TMDB usadas
     tmdb/movies.ts            # discoverMovies, getMovie, searchAvailable, getGenres
+    availability.ts           # filtra listas por disponibilidade nos serviços curados (busca e recomendações)
     filters.ts                # URL ⇄ Filtros (parse, validação, serialização)
     providers.ts              # lista curada
     images.ts                 # URLs de imagem (w342 pôster, w1280 fundo)
     slug.ts                   # gerar/ler [id]-[slug]
   components/
-    FilterBar.tsx (client), MovieGrid.tsx, MovieCard.tsx,
+    Hero.tsx, MovieRail.tsx (carrossel com rolagem lateral), MoreServices.tsx,
+    ProviderStrip.tsx, FilterBar.tsx (client), MovieGrid.tsx, MovieCard.tsx,
     LoadMore.tsx (client), WatchProviders.tsx, Trailer.tsx (client),
-    SearchBox.tsx (client)
+    CastList.tsx, SearchBox.tsx (client)
 ```
 
 ### Fronteiras
@@ -166,9 +195,13 @@ O cache do Next continua servindo a última resposta válida enquanto a revalida
 - Seção "Onde assistir" e resultados de busca: "Dados de disponibilidade fornecidos por JustWatch."
 - Página `/sobre` com as mesmas informações.
 
-## 11. Acessibilidade e responsividade
+## 11. Direção visual, acessibilidade e responsividade
 
-- Mobile-first; grade de 2 colunas (celular) até 6 (desktop).
+- Tema escuro no estilo dos apps de streaming (fundo quase preto, texto claro) com uma cor de destaque amarela para botões principais e filtros ativos. Cada serviço usa sua cor/logo nos selos.
+- Cabeçalho fixo com nome do site, links "Início" e "Explorar" e campo de busca.
+- Nome do site provisório: "CineStream" (definido em um único arquivo de configuração).
+- Carrosséis: rolagem lateral por toque/trackpad e setas no desktop; cerca de 7 pôsteres visíveis no desktop e 3 no celular.
+- Mobile-first; grade do Explorar de 2 colunas (celular) até 6 (desktop).
 - Filtros em painel lateral (drawer) no celular.
 - Navegação completa por teclado, `alt` com o título do filme, contraste WCAG AA.
 
@@ -179,8 +212,9 @@ O cache do Next continua servindo a última resposta válida enquanto a revalida
   - Mapeadores TMDB → modelos próprios, com JSONs reais salvos como fixtures.
   - `client.ts` com `fetch` simulado: cabeçalho de autorização, `revalidate`, erros tipados, timeout.
   - `slug.ts`.
-- **Testing Library:** `FilterBar` (gera a URL correta) e `WatchProviders` (agrupamento e estado vazio).
-- **Playwright (1 smoke test):** abrir catálogo → filtrar por Netflix → abrir um filme → ver "Onde assistir". Executado contra a API real antes de deploy, não em todo commit.
+  - `availability.ts`: filtragem por serviços curados e omissão em caso de falha.
+- **Testing Library:** `FilterBar` (gera a URL correta), `WatchProviders` (agrupamento e estado vazio) e `MovieRail` (link "Ver todos" correto).
+- **Playwright (1 smoke test):** abrir a vitrine → "Ver todos" do carrossel da Netflix → conferir filtro ativo no Explorar → abrir um filme → ver "Onde assistir". Executado contra a API real antes de deploy, não em todo commit.
 
 ## 13. Configuração e deploy
 
