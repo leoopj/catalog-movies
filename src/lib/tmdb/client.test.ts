@@ -1,6 +1,6 @@
 import { beforeEach, expect, test, vi } from "vitest";
 import { mockFetch } from "@/test/helpers";
-import { TmdbNotFound, TmdbUnavailable, tmdbFetch } from "./client";
+import { TmdbNotFound, tmdbFetch } from "./client";
 
 beforeEach(() => {
   process.env.TMDB_READ_TOKEN = "t";

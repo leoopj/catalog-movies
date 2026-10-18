@@ -41,7 +41,7 @@ export default async function BuscaPage({ searchParams }: BuscaPageProps) {
           <p className="text-xs text-[var(--foreground)]/60">
             Dados de disponibilidade fornecidos por JustWatch.
           </p>
-          <LoadMore endpoint={endpoint} initialPage={page} totalPages={totalPages} />
+          <LoadMore key={endpoint} endpoint={endpoint} initialPage={page} totalPages={totalPages} />
         </>
       )}
     </div>

@@ -91,14 +91,20 @@ export default async function MoviePage({ params }: MoviePageProps) {
         <div className="absolute inset-0 bg-gradient-to-r from-[var(--background)]/90 via-[var(--background)]/20 to-transparent" />
 
         <div className="relative z-10 flex w-full max-w-6xl flex-col gap-4 px-4 py-10 sm:flex-row sm:items-end sm:gap-6 sm:px-8">
-          {movie.posterUrl && (
+          {movie.posterUrl ? (
             <Image
               src={movie.posterUrl}
               alt={movie.title}
               width={160}
               height={240}
-              className="hidden rounded-lg shadow-lg sm:block"
+              className="w-32 shrink-0 rounded-lg shadow-lg sm:w-40"
             />
+          ) : (
+            <div
+              className="flex aspect-[2/3] w-32 shrink-0 items-center justify-center rounded-lg bg-[var(--surface)] p-2 text-center text-sm text-[var(--foreground)]/80 shadow-lg sm:w-40"
+            >
+              {movie.title}
+            </div>
           )}
 
           <div className="flex flex-col gap-3">

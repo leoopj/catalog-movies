@@ -24,26 +24,28 @@ async function ServiceRail({ providerId }: { providerId: number }) {
   const provider = getProvider(providerId);
   if (!provider) return null;
 
+  let movies: Awaited<ReturnType<typeof getServiceRail>>;
   try {
-    const movies = await getServiceRail(providerId);
-    const badge: ProviderBadge = {
-      id: provider.id,
-      name: provider.name,
-      logoUrl: logoUrl(provider.logoPath),
-      color: provider.color,
-    };
-
-    return (
-      <MovieRail
-        title={provider.name}
-        movies={movies}
-        badge={badge}
-        seeAllHref={`/explorar?servicos=${provider.id}`}
-      />
-    );
+    movies = await getServiceRail(providerId);
   } catch {
     return null;
   }
+
+  const badge: ProviderBadge = {
+    id: provider.id,
+    name: provider.name,
+    logoUrl: logoUrl(provider.logoPath),
+    color: provider.color,
+  };
+
+  return (
+    <MovieRail
+      title={provider.name}
+      movies={movies}
+      badge={badge}
+      seeAllHref={`/explorar?servicos=${provider.id}`}
+    />
+  );
 }
 
 export default async function Home() {
