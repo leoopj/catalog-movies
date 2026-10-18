@@ -1,0 +1,558 @@
+{
+  "adult": false,
+  "backdrop_path": "/eZ239CUp1d6OryZEBPnO2n87gMG.jpg",
+  "belongs_to_collection": {
+    "id": 726871,
+    "name": "Duna: Coleção",
+    "poster_path": "/wSvsy0TwSg6u47CHqEcax194AGk.jpg",
+    "backdrop_path": "/fahk0Fu7VUUfK6IkTt1R3waOD9F.jpg"
+  },
+  "budget": 190000000,
+  "genres": [
+    {
+      "id": 878,
+      "name": "Ficção científica"
+    },
+    {
+      "id": 12,
+      "name": "Aventura"
+    }
+  ],
+  "homepage": "https://www.warnerbros.com.br/filmes/duna-parte-dois",
+  "id": 693134,
+  "imdb_id": "tt15239678",
+  "origin_country": [
+    "US"
+  ],
+  "original_language": "en",
+  "original_title": "Dune: Part Two",
+  "overview": "A jornada de Paul Atreides continua. Ele está determinado a buscar vingança contra aqueles que destruíram sua família e seu lar. Com a ajuda de Chani e dos Fremen, ele embarca em uma jornada espiritual, mística e marcial. Se torna Muad'Dib, o líder messiânico dos Fremen, enquanto luta para evitar um futuro sombrio que ele testemunhou em visões. No entanto, suas ações inadvertidamente desencadeiam uma Guerra Santa em seu nome, que se espalha pelo universo conhecido. Enquanto enfrenta escolhas difíceis entre o amor por Chani e o destino de seu povo, Paul precisa usar suas habilidades e conhecimentos para evitar o terrível futuro que previu.",
+  "popularity": 71.4854,
+  "poster_path": "/VMy4UGsI2u3f4fALGeCqCdsQBb.jpg",
+  "production_companies": [
+    {
+      "id": 923,
+      "logo_path": "/5UQsZrfbfG2dYJbx8DxfoTr2Bvu.png",
+      "name": "Legendary Pictures",
+      "origin_country": "US"
+    }
+  ],
+  "production_countries": [
+    {
+      "iso_3166_1": "US",
+      "name": "United States of America"
+    }
+  ],
+  "release_date": "2024-02-27",
+  "revenue": 714844358,
+  "runtime": 166,
+  "softcore": false,
+  "spoken_languages": [
+    {
+      "english_name": "English",
+      "iso_639_1": "en",
+      "name": "English"
+    }
+  ],
+  "status": "Released",
+  "tagline": "Vida longa aos guerreiros.",
+  "title": "Duna: Parte Dois",
+  "video": false,
+  "vote_average": 8.141,
+  "vote_count": 8759,
+  "credits": {
+    "cast": [
+      {
+        "adult": false,
+        "gender": 2,
+        "id": 1190668,
+        "known_for_department": "Acting",
+        "name": "Timothée Chalamet",
+        "original_name": "Timothée Chalamet",
+        "popularity": 9.012,
+        "profile_path": "/dFxpwRpmzpVfP1zjluH68DeQhyj.jpg",
+        "cast_id": 2,
+        "character": "Paul Atreides",
+        "credit_id": "5e959c45955c6500159f1c98",
+        "order": 0
+      },
+      {
+        "adult": false,
+        "gender": 1,
+        "id": 505710,
+        "known_for_department": "Acting",
+        "name": "Zendaya",
+        "original_name": "Zendaya",
+        "popularity": 13.3023,
+        "profile_path": "/qGkBlyn1AwQpuFnRARMRwj0iHZp.jpg",
+        "cast_id": 3,
+        "character": "Chani",
+        "credit_id": "5e959c5caf58cb001adc1c94",
+        "order": 1
+      },
+      {
+        "adult": false,
+        "gender": 1,
+        "id": 933238,
+        "known_for_department": "Acting",
+        "name": "Rebecca Ferguson",
+        "original_name": "Rebecca Ferguson",
+        "popularity": 11.2114,
+        "profile_path": "/ra53cM1aNmdH0aFhj8yBqPOj2fb.jpg",
+        "cast_id": 8,
+        "character": "Jessica",
+        "credit_id": "5f193d28519bbb003570317b",
+        "order": 2
+      },
+      {
+        "adult": false,
+        "gender": 2,
+        "id": 3810,
+        "known_for_department": "Acting",
+        "name": "Javier Bardem",
+        "original_name": "Javier Bardem",
+        "popularity": 5.7593,
+        "profile_path": "/zfRID0jx8DKBluPGU9xtk9sZWUt.jpg",
+        "cast_id": 14,
+        "character": "Stilgar",
+        "credit_id": "603ccede60c51d7aeb807f49",
+        "order": 3
+      },
+      {
+        "adult": false,
+        "gender": 2,
+        "id": 16851,
+        "known_for_department": "Acting",
+        "name": "Josh Brolin",
+        "original_name": "Josh Brolin",
+        "popularity": 10.1947,
+        "profile_path": "/sX2etBbIkxRaCsATyw5ZpOVMPTD.jpg",
+        "cast_id": 5,
+        "character": "Gurney Halleck",
+        "credit_id": "5e959c7daf58cb0012dc1007",
+        "order": 4
+      },
+      {
+        "adult": false,
+        "gender": 2,
+        "id": 86654,
+        "known_for_department": "Acting",
+        "name": "Austin Butler",
+        "original_name": "Austin Butler",
+        "popularity": 4.5611,
+        "profile_path": "/atdAs4pFGjUQ4m2W8kJYly7N6cC.jpg",
+        "cast_id": 54,
+        "character": "Feyd-Rautha",
+        "credit_id": "6261033257530e0066d2daa3",
+        "order": 5
+      },
+      {
+        "adult": false,
+        "gender": 1,
+        "id": 1373737,
+        "known_for_department": "Acting",
+        "name": "Florence Pugh",
+        "original_name": "Florence Pugh",
+        "popularity": 14.2583,
+        "profile_path": "/1QfiLnofJFlOJOLCWaxyDpIN03v.jpg",
+        "cast_id": 53,
+        "character": "Princess Irulan",
+        "credit_id": "626103233d745415a727d041",
+        "order": 6
+      },
+      {
+        "adult": false,
+        "gender": 2,
+        "id": 543530,
+        "known_for_department": "Acting",
+        "name": "Dave Bautista",
+        "original_name": "Dave Bautista",
+        "popularity": 6.1844,
+        "profile_path": "/snk6JiXOOoRjPtHU5VMoy6qbd32.jpg",
+        "cast_id": 10,
+        "character": "Beast Rabban",
+        "credit_id": "5f193dd5a6d931003785f7c0",
+        "order": 7
+      },
+      {
+        "adult": false,
+        "gender": 2,
+        "id": 4690,
+        "known_for_department": "Acting",
+        "name": "Christopher Walken",
+        "original_name": "Christopher Walken",
+        "popularity": 6.084,
+        "profile_path": "/ApgDL7nudR9T2GpjCG4vESgymO2.jpg",
+        "cast_id": 55,
+        "character": "Emperor",
+        "credit_id": "627d48c8f6596f16bc6ab4f0",
+        "order": 8
+      },
+      {
+        "adult": false,
+        "gender": 1,
+        "id": 121529,
+        "known_for_department": "Acting",
+        "name": "Léa Seydoux",
+        "original_name": "Léa Seydoux",
+        "popularity": 3.7984,
+        "profile_path": "/4q6xqqWLLleQrFjeqeYYV8B0fwE.jpg",
+        "cast_id": 56,
+        "character": "Lady Margot Fenring",
+        "credit_id": "62b1fdef9f51af006252fe1a",
+        "order": 9
+      },
+      {
+        "adult": false,
+        "gender": 2,
+        "id": 1640,
+        "known_for_department": "Acting",
+        "name": "Stellan Skarsgård",
+        "original_name": "Stellan Skarsgård",
+        "popularity": 4.5585,
+        "profile_path": "/mW7xmtGV4y79kQGn0zkKVGDMAmw.jpg",
+        "cast_id": 9,
+        "character": "Baron Harkonnen",
+        "credit_id": "5f193d86447f9c0034365752",
+        "order": 10
+      },
+      {
+        "adult": false,
+        "gender": 1,
+        "id": 44079,
+        "known_for_department": "Acting",
+        "name": "Charlotte Rampling",
+        "original_name": "Charlotte Rampling",
+        "popularity": 3.378,
+        "profile_path": "/Htvl9mN6mlf2a18RAFzNXF3RiG.jpg",
+        "cast_id": 13,
+        "character": "Reverend Mother Mohiam",
+        "credit_id": "603cced1c56d2d0050bda663",
+        "order": 11
+      }
+    ],
+    "crew": [
+      {
+        "adult": false,
+        "gender": 2,
+        "id": 137427,
+        "known_for_department": "Directing",
+        "name": "Denis Villeneuve",
+        "original_name": "Denis Villeneuve",
+        "popularity": 3.7447,
+        "profile_path": "/xzQYqb4nR8xT7Zdw5itbEL9K3fd.jpg",
+        "credit_id": "5e959beedb72c00012ad7dcf",
+        "department": "Directing",
+        "job": "Director"
+      },
+      {
+        "adult": false,
+        "gender": 0,
+        "id": 2168354,
+        "known_for_department": "Production",
+        "name": "Tarik Afifi",
+        "original_name": "Tarik Afifi",
+        "popularity": 0.3528,
+        "profile_path": null,
+        "credit_id": "65dbb4b9b7b69d017dc7ddcb",
+        "department": "Directing",
+        "job": "First Assistant Director"
+      },
+      {
+        "adult": false,
+        "gender": 2,
+        "id": 2143601,
+        "known_for_department": "Directing",
+        "name": "Tamás 'Chipie' Péter",
+        "original_name": "Tamás 'Chipie' Péter",
+        "popularity": 0.3751,
+        "profile_path": null,
+        "credit_id": "6452b6b2091e620102778df4",
+        "department": "Directing",
+        "job": "First Assistant Director"
+      }
+    ]
+  },
+  "videos": {
+    "results": [
+      {
+        "iso_639_1": "pt",
+        "iso_3166_1": "PT",
+        "name": "Dune: Parte Dois | Trailer | Max",
+        "key": "v3TrqXtYPVI",
+        "site": "YouTube",
+        "size": 1080,
+        "type": "Trailer",
+        "official": true,
+        "id": "6846ddd1d7f48213ae2063cd",
+        "published_at": "2024-05-14T08:00:25.000Z"
+      },
+      {
+        "iso_639_1": "en",
+        "iso_3166_1": "US",
+        "name": "Official Trailer 3",
+        "key": "U2Qp5pL3ovA",
+        "site": "YouTube",
+        "size": 2160,
+        "type": "Trailer",
+        "official": true,
+        "id": "6578d2b3f04d0100c691f500",
+        "published_at": "2023-12-12T17:00:20.000Z"
+      },
+      {
+        "iso_639_1": "pt",
+        "iso_3166_1": "PT",
+        "name": "Dune Duna: Parte Dois | Trailer 3 Oficial",
+        "key": "4KvI8lWpQ3A",
+        "site": "YouTube",
+        "size": 1080,
+        "type": "Trailer",
+        "official": true,
+        "id": "68310b50a02850b1b6054891",
+        "published_at": "2023-12-12T17:00:06.000Z"
+      },
+      {
+        "iso_639_1": "pt",
+        "iso_3166_1": "PT",
+        "name": "Dune Duna: Parte Dois | Trailer 2  Oficial",
+        "key": "bpEe4CbAvtY",
+        "site": "YouTube",
+        "size": 1080,
+        "type": "Trailer",
+        "official": true,
+        "id": "69cbeef5ec6313e4d242a757",
+        "published_at": "2023-06-29T16:00:33.000Z"
+      },
+      {
+        "iso_639_1": "en",
+        "iso_3166_1": "US",
+        "name": "Official Trailer 2",
+        "key": "_YUzQa_1RCE",
+        "site": "YouTube",
+        "size": 2160,
+        "type": "Trailer",
+        "official": true,
+        "id": "649db24d5aba320139942fc7",
+        "published_at": "2023-06-29T16:00:24.000Z"
+      },
+      {
+        "iso_639_1": "pt",
+        "iso_3166_1": "PT",
+        "name": "Dune Duna: Parte Dois | Trailer Oficial",
+        "key": "nwPhni_Jl9c",
+        "site": "YouTube",
+        "size": 1080,
+        "type": "Trailer",
+        "official": true,
+        "id": "69cbeee7986ca7cc974c01f4",
+        "published_at": "2023-05-03T16:00:38.000Z"
+      },
+      {
+        "iso_639_1": "en",
+        "iso_3166_1": "US",
+        "name": "Official Trailer",
+        "key": "Way9Dexny3w",
+        "site": "YouTube",
+        "size": 1080,
+        "type": "Trailer",
+        "official": true,
+        "id": "645141d9e942ee0e3a06c077",
+        "published_at": "2023-05-02T15:06:46.000Z"
+      },
+      {
+        "iso_639_1": "en",
+        "iso_3166_1": "US",
+        "name": "Timothée Chalamet & Zendaya Spice Harvester Attack - Movie Clip",
+        "key": "RT3zGuKkf7M",
+        "site": "YouTube",
+        "size": 1080,
+        "type": "Clip",
+        "official": true,
+        "id": "69b4115fdbdec439674a6ffa",
+        "published_at": "2026-03-13T12:01:01.000Z"
+      },
+      {
+        "iso_639_1": "en",
+        "iso_3166_1": "US",
+        "name": "Rise of the Fremen Leader",
+        "key": "8kopgAy4fwY",
+        "site": "YouTube",
+        "size": 1080,
+        "type": "Clip",
+        "official": true,
+        "id": "69339462c140d93719c1ef21",
+        "published_at": "2025-12-05T15:43:26.000Z"
+      },
+      {
+        "iso_639_1": "en",
+        "iso_3166_1": "US",
+        "name": "Paul Atreides Tries Riding A Sandworm",
+        "key": "WXFHNM-RuG8",
+        "site": "YouTube",
+        "size": 1080,
+        "type": "Clip",
+        "official": true,
+        "id": "67df567fc0b4387a6ec7072d",
+        "published_at": "2025-03-21T23:00:32.000Z"
+      }
+    ]
+  },
+  "watch/providers": {
+    "results": {
+      "BR": {
+        "link": "https://www.themoviedb.org/movie/693134-dune-part-two/watch?locale=BR",
+        "buy": [
+          {
+            "logo_path": "/qdEGArH3lKfFnAtYXMkSYk5wxuG.png",
+            "provider_id": 2,
+            "provider_name": "Apple TV Store",
+            "display_priority": 9
+          },
+          {
+            "logo_path": "/jn6TLbtaTZntTRX9UYucHJvpQx1.png",
+            "provider_id": 10,
+            "provider_name": "Amazon Video",
+            "display_priority": 13
+          }
+        ],
+        "flatrate": [
+          {
+            "logo_path": "/skypuy7SXuugIQeYg0IglmzoKaS.png",
+            "provider_id": 1899,
+            "provider_name": "HBO Max",
+            "display_priority": 8
+          },
+          {
+            "logo_path": "/olzQMHt2SX7iNy8WDMR299hVFcL.png",
+            "provider_id": 484,
+            "provider_name": "Claro tv+",
+            "display_priority": 20
+          },
+          {
+            "logo_path": "/64fLWeSyZ1KQZhIdvTdy4QHeWty.png",
+            "provider_id": 1825,
+            "provider_name": "HBO Max Amazon Channel",
+            "display_priority": 47
+          },
+          {
+            "logo_path": "/j3Q750FwRyIejO5MrNu25Kia57.png",
+            "provider_id": 1889,
+            "provider_name": "Universal+ Amazon Channel",
+            "display_priority": 81
+          }
+        ],
+        "rent": [
+          {
+            "logo_path": "/qdEGArH3lKfFnAtYXMkSYk5wxuG.png",
+            "provider_id": 2,
+            "provider_name": "Apple TV Store",
+            "display_priority": 9
+          },
+          {
+            "logo_path": "/jn6TLbtaTZntTRX9UYucHJvpQx1.png",
+            "provider_id": 10,
+            "provider_name": "Amazon Video",
+            "display_priority": 13
+          }
+        ]
+      }
+    }
+  },
+  "release_dates": {
+    "results": [
+      {
+        "iso_3166_1": "BR",
+        "release_dates": [
+          {
+            "certification": "14",
+            "descriptors": [],
+            "iso_639_1": "",
+            "note": "",
+            "release_date": "2024-02-29T00:00:00.000Z",
+            "type": 3
+          },
+          {
+            "certification": "14",
+            "descriptors": [],
+            "iso_639_1": "",
+            "note": "Max",
+            "release_date": "2024-05-21T00:00:00.000Z",
+            "type": 4
+          }
+        ]
+      }
+    ]
+  },
+  "recommendations": {
+    "page": 1,
+    "results": [
+      {
+        "adult": false,
+        "backdrop_path": "/qVgZu5BTx6pu4owCvVOm4zjTfOi.jpg",
+        "id": 438631,
+        "title": "Duna",
+        "original_title": "Dune",
+        "overview": "Em um futuro distante, planetas são comandados por casas nobres que fazem parte de um império feudal intergalático. Paul Atreides é um jovem cuja família toma o controle do planeta deserto Arrakis, também conhecido como Duna. A única fonte da especiaria Melange, a substância mais importante do cosmos, Arrakis se mostra ser um planeta nem um pouco fácil de governar.",
+        "poster_path": "/uzERcfV2rSHNhW5eViQiO9hNiA7.jpg",
+        "media_type": "movie",
+        "original_language": "en",
+        "genre_ids": [
+          878,
+          12
+        ],
+        "popularity": 57.1179,
+        "release_date": "2021-09-15",
+        "softcore": false,
+        "video": false,
+        "vote_average": 7.785,
+        "vote_count": 15735
+      },
+      {
+        "adult": false,
+        "backdrop_path": "/5vDuLrjJXFS9PTF7Q1xzobmYKR9.jpg",
+        "id": 1895,
+        "title": "Star Wars: Episódio III - A Vingança dos Sith",
+        "original_title": "Star Wars: Episode III - Revenge of the Sith",
+        "overview": "As Guerras Clônicas estão em pleno andamento e Anakin Skywalker mantém um elo de lealdade com Palpatine, ao mesmo tempo em que luta para que seu casamento com Padmé Amidala não seja afetado por esta situação. Seduzido por promessas de poder, Anakin se aproxima cada vez mais de Darth Sidious até se tornar o temível Darth Vader. Juntos eles tramam um plano para aniquilar de uma vez por todas com os cavaleiros jedi.",
+        "poster_path": "/nuF5yWtTJEEAd4Qa6cVkYz1XCST.jpg",
+        "media_type": "movie",
+        "original_language": "en",
+        "genre_ids": [
+          12,
+          28,
+          878
+        ],
+        "popularity": 28.6734,
+        "release_date": "2005-05-17",
+        "softcore": false,
+        "video": false,
+        "vote_average": 7.5,
+        "vote_count": 15414
+      },
+      {
+        "adult": false,
+        "backdrop_path": "/qCPLtXrTB10UsgAFxsWOB44gDPu.jpg",
+        "id": 412656,
+        "title": "Mundo em Caos",
+        "original_title": "Chaos Walking",
+        "overview": "Em um futuro não muito distante, em um mundo onde as mulheres desapareceram e os homens foram afetados pelo \"ruído\" – uma força que deixa seus pensamentos audíveis – Todd Hewitt encontra Viola, uma jovem misteriosa que aterrissou em seu planeta. Com Viola correndo perigo, Todd jura protegê-la e colocá-la fora de perigo. Para salvá-la, Todd terá que controlar seu \"ruído\", descobrir sua própria força e desvendar todos os segredos sombrios que seu planeta e sua comunidade guardam.",
+        "poster_path": "/oMSumadgRiygK1DUtBurdnZb9Jz.jpg",
+        "media_type": "movie",
+        "original_language": "en",
+        "genre_ids": [
+          14,
+          878,
+          12
+        ],
+        "popularity": 14.5666,
+        "release_date": "2021-02-24",
+        "softcore": false,
+        "video": false,
+        "vote_average": 6.542,
+        "vote_count": 2721
+      }
+    ],
+    "total_pages": 27,
+    "total_results": 527
+  }
+}
