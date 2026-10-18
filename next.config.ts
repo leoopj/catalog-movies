@@ -6,12 +6,15 @@ const nextConfig: NextConfig = {
   // do scaffold do create-next-app (Tarefa 1), não um requisito da spec/plano.
   // Com PPR habilitado, notFound()/permanentRedirect() em rotas com partes
   // estáticas (PPR) nunca produziam o status HTTP real (sempre 200 OK,
-  // soft-404). Mesmo com essas flags desligadas, o loading.tsx global
-  // (src/app/loading.tsx) ainda criava um boundary de streaming para
-  // /filme/[slug], então a rota também precisou de
-  // `export const experimental_ppr = false` (ver page.tsx) para garantir
-  // renderização síncrona e status HTTP real. Ver task-10-report.md para
-  // os testes de confirmação via curl.
+  // soft-404). A causa raiz completa do soft-404 em /filme/[slug], porém,
+  // só foi resolvida movendo o loading.tsx global para o route group
+  // src/app/(com-loading)/ (junto com as rotas / e /explorar que
+  // realmente precisam dele), pois ele criava um boundary de Suspense
+  // ancestral que o App Router usava para streamar a resposta (sempre
+  // 200, Transfer-Encoding: chunked) mesmo com essas flags desligadas e
+  // com experimental_ppr = false isolado na rota. Ver page.tsx em
+  // src/app/filme/[slug]/ e task-10-report.md para os testes de
+  // confirmação via curl.
   images: {
     unoptimized: true,
     remotePatterns: [

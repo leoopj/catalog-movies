@@ -12,12 +12,20 @@ import { movieSlug, parseMovieSlug } from "@/lib/slug";
 import { getMovie } from "@/lib/tmdb/movies";
 import { TmdbNotFound } from "@/lib/tmdb/client";
 
-// Garante renderização síncrona (sem streaming via Suspense) para que
+// Força renderização dinâmica síncrona (sem streaming) para que
 // notFound()/permanentRedirect() produzam o status HTTP real (404/308) em
-// vez de um soft-404 (200 OK). Necessário mesmo com cacheComponents
-// desabilitado globalmente, pois o loading.tsx em src/app/ cria um
-// boundary de streaming que herda para esta rota. Ver task-10-report.md.
-export const experimental_ppr = false;
+// vez de um soft-404 (200 OK). A causa raiz do soft-404 NÃO era PPR nem
+// cacheComponents (já removidos/desligados): era o loading.tsx global em
+// src/app/, ancestral desta rota, que criava um boundary de Suspense e
+// fazia o App Router responder sempre 200 com Transfer-Encoding: chunked,
+// independente de experimental_ppr. A correção definitiva foi mover
+// home/explorar (as rotas que de fato precisam do loading global) e o
+// loading.tsx para o grupo de rotas src/app/(com-loading)/, deixando
+// /filme/[slug] fora dessa árvore e sem nenhum loading.tsx ancestral.
+// Este `dynamic = "force-dynamic"` é mantido como reforço defensivo para
+// impedir qualquer streaming parcial futuro nesta rota. Ver
+// task-10-report.md para os testes de confirmação via curl.
+export const dynamic = "force-dynamic";
 
 const getCachedMovie = cache(getMovie);
 
