@@ -120,7 +120,11 @@ test("slug inválido", () => {
 
 **Interfaces:**
 - Produz:
-  - `type Provider = { id: number; name: string; color: string; logoPath: string }`; `CURATED_PROVIDERS: Provider[]` (na ordem da spec); `HOME_RAIL_PROVIDER_IDS: number[]` (Netflix, Prime Video, Disney+, Max, Globoplay, Apple TV+); `getProvider(id: number): Provider | undefined`.
+  - `type Provider = { id: number; tmdbIds: number[]; name: string; color: string; logoPath: string }`. `id` é o ID principal, usado na URL. `tmdbIds` traz o principal primeiro e depois as variantes. Os 11 serviços, a ordem, os IDs, as variantes e os logos vêm da tabela da seção 5 da spec.
+  - `CURATED_PROVIDERS: Provider[]` (na ordem da spec).
+  - `HOME_RAIL_PROVIDER_IDS: number[]` = `[8, 119, 337, 1899, 307, 350]`.
+  - `getProvider(id: number): Provider | undefined` (pelo ID principal).
+  - `providerForTmdbId(tmdbId: number): Provider | undefined` (pelo principal ou por uma variante).
   - `type SortKey = "popularidade" | "nota" | "lancamento"`
   - `type Filters = { servicos: number[]; aluguel: boolean; genero: number | null; anoDe: number | null; anoAte: number | null; nota: number | null; ordem: SortKey }` (`servicos` vazio = todos os curados)
   - `DEFAULT_FILTERS: Filters`
@@ -128,9 +132,7 @@ test("slug inválido", () => {
   - `serializeFilters(f: Filters): string` (query sem `?`, omite valores padrão, ordem fixa das chaves: `servicos, genero, ano, nota, ordem, aluguel`)
   - `toDiscoverParams(f: Filters, page: number): Record<string, string>`
 
-- [ ] **Passo 1: Confirmar os IDs dos provedores.** Com o token em `.env.local`, rode:
-  `curl -s -H "Authorization: Bearer $TMDB_READ_TOKEN" "https://api.themoviedb.org/3/watch/providers/movie?watch_region=BR&language=pt-BR" > scratch-providers.json`
-  Procure os 12 serviços da spec e anote `provider_id` e `logo_path`. Valores de partida esperados: Netflix 8, Prime Video 119, Disney+ 337, Max 1899, Globoplay 307, Apple TV+ 350, Paramount+ 531, Claro tv+ 167, Telecine 227, Crunchyroll 283, Looke 47; Mercado Play: procure por "Mercado". Use o que a API devolver. Serviço ausente sai da lista (registre no commit). Não versione o JSON.
+- [ ] **Passo 1: Os IDs já foram confirmados em 2026-10-18** (seção 5 da spec). Copie a tabela de lá para `providers.ts`, sem consultar a API.
 - [ ] **Passo 2: Escrever os testes que falham** em `filters.test.ts`:
 
 ```ts
@@ -161,7 +163,7 @@ test("serialização omite padrões e faz ida e volta", () => {
 test("parâmetros do discover com padrões", () => {
   expect(toDiscoverParams(DEFAULT_FILTERS, 1)).toEqual({
     watch_region: "BR", language: "pt-BR", include_adult: "false",
-    with_watch_providers: CURATED_PROVIDERS.map((p) => p.id).join("|"),
+    with_watch_providers: "8|1796|119|2100|337|1899|307|350|531|2303|2302|484|283|47",
     with_watch_monetization_types: "flatrate|free|ads",
     sort_by: "popularity.desc", page: "1",
   });
@@ -169,12 +171,15 @@ test("parâmetros do discover com padrões", () => {
 test("parâmetros do discover com todos os filtros", () => {
   const p = toDiscoverParams(parseFilters(new URLSearchParams("servicos=8,119&genero=28&ano=2020-2024&nota=7&aluguel=1&ordem=lancamento")), 3);
   expect(p).toMatchObject({
-    with_watch_providers: "8|119", with_genres: "28",
+    with_watch_providers: "8|1796|119|2100", with_genres: "28",
     "primary_release_date.gte": "2020-01-01", "primary_release_date.lte": "2024-12-31",
     "vote_average.gte": "7", "vote_count.gte": "100",
     with_watch_monetization_types: "flatrate|free|ads|rent|buy",
     sort_by: "primary_release_date.desc", page: "3",
   });
+});
+test("ID de variante na URL é descartado (só IDs principais valem)", () => {
+  expect(parseFilters(new URLSearchParams("servicos=1796,8")).servicos).toEqual([8]);
 });
 test("ordenar por nota exige 100 votos mesmo sem nota mínima", () => {
   const p = toDiscoverParams({ ...DEFAULT_FILTERS, ordem: "nota" }, 1);
@@ -184,7 +189,7 @@ test("ordenar por nota exige 100 votos mesmo sem nota mínima", () => {
 ```
 
 - [ ] **Passo 3: Rodar** `npx vitest run src/lib/filters.test.ts`. Esperado: FALHA.
-- [ ] **Passo 4: Implementar `providers.ts` e `filters.ts`.** Regras de validação: `servicos` mantém só IDs curados, sem duplicatas, na ordem recebida; `genero` é inteiro positivo; ano entre 1900 e (ano atual + 1), com `anoDe <= anoAte`, senão os dois viram `null`; `nota` é inteiro de 1 a 9; `aluguel` só vale `"1"`; em `Record`, um array usa o primeiro valor.
+- [ ] **Passo 4: Implementar `providers.ts` e `filters.ts`.** Regras de validação: `servicos` mantém só IDs principais curados, sem duplicatas, na ordem recebida; `genero` é inteiro positivo; ano entre 1900 e (ano atual + 1), com `anoDe <= anoAte`, senão os dois viram `null`; `nota` é inteiro de 1 a 9; `aluguel` só vale `"1"`; em `Record`, um array usa o primeiro valor.
 - [ ] **Passo 5: Rodar os testes.** Esperado: PASSA.
 - [ ] **Passo 6: Commit:** `git add src/lib && git commit -m "feat: serviços curados e filtros da URL"`
 
@@ -301,14 +306,14 @@ test("mapPaged limita totalPages a 500", () => {
 - Teste: `src/lib/tmdb/movies.test.ts`, `src/lib/availability.test.ts`
 
 **Interfaces:**
-- Consome: `tmdbFetch`, `REVALIDATE`, mapeadores (Tarefa 4); `toDiscoverParams`, `Filters` (Tarefa 3); `CURATED_PROVIDERS`, `getProvider` (Tarefa 3).
+- Consome: `tmdbFetch`, `REVALIDATE`, mapeadores (Tarefa 4); `toDiscoverParams`, `Filters` (Tarefa 3); `CURATED_PROVIDERS`, `getProvider`, `providerForTmdbId` (Tarefa 3).
 - Produz:
   - `discoverMovies(f: Filters, page: number): Promise<Paged<MovieSummary>>` (cache `list`)
   - `getMovie(id: number): Promise<MovieDetails>` (cache `detail`; lança `TmdbNotFound`)
   - `getWatchAvailability(id: number): Promise<WatchAvailability>` (cache `detail`)
   - `getGenres(): Promise<{ id: number; name: string }[]>` (`/genre/movie/list`, cache `static`)
   - `searchMovies(q: string, page: number): Promise<Paged<MovieSummary>>` (cache `list`)
-  - `firstCuratedBadge(w: WatchAvailability): ProviderBadge | null`: primeiro serviço curado (na ordem de `CURATED_PROVIDERS`) presente em `subscription` ou `free`.
+  - `firstCuratedBadge(w: WatchAvailability): ProviderBadge | null`: primeiro serviço curado (na ordem de `CURATED_PROVIDERS`) com o ID principal ou uma variante presente em `subscription` ou `free`; o selo é sempre o do serviço principal (ex.: 1796 → Netflix, id 8).
   - `withBadges(movies: MovieSummary[], lookup?: (id: number) => Promise<WatchAvailability>): Promise<MovieSummary[]>`: consulta em paralelo (`Promise.allSettled`), mantém a ordem e **omite** filmes sem serviço curado ou cuja consulta falhou. `lookup` padrão é `getWatchAvailability`.
   - `searchAvailable(q: string, page: number): Promise<Paged<MovieSummary>>`: `q.trim()` vazio devolve `{ items: [], page: 1, totalPages: 0 }` sem chamar o TMDB; senão `searchMovies` + `withBadges`, preservando `page` e `totalPages` do TMDB.
 
@@ -325,6 +330,7 @@ test("primeiro serviço curado segue a ordem da lista curada", () => {
 test("só aluguel ou serviço não curado não conta", () => {
   expect(firstCuratedBadge({ ...empty, rent: [opt(8)] })).toBeNull();
   expect(firstCuratedBadge({ ...empty, subscription: [opt(99999)] })).toBeNull();
+  expect(firstCuratedBadge({ ...empty, subscription: [opt(1796)] })?.id).toBe(8); // variante com anúncios conta como Netflix
 });
 test("withBadges omite indisponíveis e falhas, mantendo a ordem", async () => {
   const movies = [1, 2, 3, 4].map((id) => ({ ...summary, id }));

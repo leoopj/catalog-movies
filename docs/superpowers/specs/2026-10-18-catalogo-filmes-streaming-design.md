@@ -73,7 +73,7 @@ Composição, de cima para baixo:
 
 1. **Destaque (hero):** o filme mais popular do momento entre os serviços curados (primeiro resultado do discover com todos os serviços curados que tenha imagem de fundo). Mostra imagem de fundo, título, ano, duração, gênero principal, nota, sinopse curta, o serviço onde está disponível e os botões "Ver detalhes" e "▶ Trailer". É um filme só, sem rotação automática; muda quando o cache renova (6 h).
 2. **Carrossel "Em alta em todos os serviços"**: discover com todos os serviços curados, ordenado por popularidade.
-3. **Seis carrosséis de serviço**, nesta ordem: Netflix, Prime Video, Disney+, Max, Globoplay, Apple TV+. Cada um: discover com `with_watch_providers=<id>`, ordenado por popularidade, 20 filmes, logo do serviço no título e link "Ver todos ›" para `/explorar?servicos=<id>`.
+3. **Seis carrosséis de serviço**, nesta ordem: Netflix, Prime Video, Disney+, HBO Max, Globoplay, Apple TV+. Cada um: discover com `with_watch_providers` com o ID principal e as variantes do serviço (seção 5), ordenado por popularidade, 20 filmes, logo do serviço no título e link "Ver todos ›" para `/explorar?servicos=<id>`.
 4. **"Mais serviços"**: linha de atalhos (chips) para os demais serviços curados, cada um levando a `/explorar?servicos=<id>`.
 
 Regras:
@@ -124,10 +124,26 @@ Layout "cabeçalho cinematográfico": imagem de fundo em largura total com degra
 
 ## 5. Serviços curados
 
-Netflix, Prime Video, Disney+, Max, Globoplay, Apple TV+, Paramount+, Mercado Play, Claro tv+, Telecine, Crunchyroll, Looke.
+IDs confirmados em 2026-10-18 via `GET /watch/providers/movie?watch_region=BR`. Cada serviço tem um **ID principal** (usado na URL do site, `servicos=<id>`) e pode agrupar **variantes** do mesmo serviço (com anúncios, premium), que entram juntas no filtro do TMDB. O visitante vê um único chip por serviço.
 
-- Mantidos em um único arquivo `src/lib/providers.ts` (id, nome, logo).
-- Os IDs são confirmados na implementação via `GET /watch/providers/movie?watch_region=BR`, porque o TMDB pode alterá-los (ex.: HBO Max → Max). Um serviço que não existir na listagem BR é removido da lista.
+| Ordem | Serviço (nome exibido) | ID principal | Variantes agrupadas | Logo (`logo_path`) |
+|---|---|---|---|---|
+| 1 | Netflix | 8 | 1796 (Netflix Standard with Ads) | `/rK1KljqmbvO9HQa1PBFLILWah72.png` |
+| 2 | Prime Video | 119 | 2100 (Amazon Prime Video with Ads) | `/gMZdpavHmxFNnLpMHwVxfqeux2g.png` |
+| 3 | Disney+ | 337 | — | `/5eZ872CghnHFLB1j8grszbrx0dx.png` |
+| 4 | HBO Max | 1899 | — | `/skypuy7SXuugIQeYg0IglmzoKaS.png` |
+| 5 | Globoplay | 307 | — | `/9A6Oxd3F7iXm7mds7CxYOBicojs.png` |
+| 6 | Apple TV+ | 350 | — | `/9icYBfYFcwgCbky5VdGUIKJ4C5i.png` |
+| 7 | Paramount+ | 531 | 2303 (Paramount Plus Premium) | `/pkx3klJlwW5JdtaulvDx6hDNtch.png` |
+| 8 | Mercado Play | 2302 | — | `/1jZnP6bS5nNOqwY7GGJuyLhWEYW.png` |
+| 9 | Claro tv+ | 484 | — | `/olzQMHt2SX7iNy8WDMR299hVFcL.png` |
+| 10 | Crunchyroll | 283 | — | `/uFL3c4Cq8M6WoLymlC5Y8bmGytV.png` |
+| 11 | Looke | 47 | — | `/jsAseYgBGuHRkl0sJs9AAQHHU8P.png` |
+
+- Os 6 primeiros são os carrosséis da vitrine (seção 4.0); "Max" passa a se chamar "HBO Max" em toda a interface.
+- **Telecine foi removido**: no TMDB/BR ele só existe como "Telecine Amazon Channel" (2156), um complemento do Prime Video.
+- Não entram: canais da Amazon/Apple ("… Amazon Channel", "… Apple TV Channel"), "Apple TV Store" (2, aluguel/compra) e "Claro video" (167).
+- Mantidos em um único arquivo `src/lib/providers.ts`. Se o TMDB mudar um ID, só esse arquivo muda.
 
 ## 6. Estrutura de código
 
