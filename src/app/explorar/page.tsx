@@ -36,7 +36,7 @@ export default async function ExplorarPage({ searchParams }: ExplorarPageProps) 
         </div>
       ) : (
         <>
-          <p className="text-sm text-[var(--foreground)]/70">{items.length} filmes</p>
+          <p className="text-sm text-[var(--foreground)]/70">Mostrando {items.length} filmes</p>
           <MovieGrid movies={items} />
           <LoadMore endpoint={endpoint} initialPage={page} totalPages={totalPages} />
         </>

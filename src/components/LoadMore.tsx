@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import type { MovieSummary, Paged } from "@/lib/tmdb/types";
+import type { MovieSummary, Paged } from "@/lib/filters";
 import { MovieCard } from "./MovieCard";
 
 type LoadMoreProps = {

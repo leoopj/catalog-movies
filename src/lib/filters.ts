@@ -1,4 +1,10 @@
 import { CURATED_PROVIDERS, getProvider } from "./providers";
+import type { MovieSummary, Paged } from "./tmdb/types";
+
+// Re-exportados aqui para que client components (ex.: LoadMore) possam
+// importar esses tipos sem depender diretamente de "@/lib/tmdb/*", que é
+// reservado para código server-only.
+export type { MovieSummary, Paged };
 
 export type SortKey = "popularidade" | "nota" | "lancamento";
 
