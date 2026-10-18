@@ -2,20 +2,16 @@
 
 :root {
   --background: #0b0d11;
-  --foreground: #ededed;
-
-  /* Cores da classificação indicativa brasileira (selos "Onde assistir" / detalhes) */
-  --rating-l: #4caf50;
-  --rating-10: #ffd600;
-  --rating-12: #2196f3;
-  --rating-14: #ff9800;
-  --rating-16: #f44336;
-  --rating-18: #000000;
+  --foreground: #e8e8e8;
+  --surface: #1d2129;
+  --accent: #f5c518;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-surface: var(--surface);
+  --color-accent: var(--accent);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
