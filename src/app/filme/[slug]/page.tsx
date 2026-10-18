@@ -12,6 +12,13 @@ import { movieSlug, parseMovieSlug } from "@/lib/slug";
 import { getMovie } from "@/lib/tmdb/movies";
 import { TmdbNotFound } from "@/lib/tmdb/client";
 
+// Garante renderização síncrona (sem streaming via Suspense) para que
+// notFound()/permanentRedirect() produzam o status HTTP real (404/308) em
+// vez de um soft-404 (200 OK). Necessário mesmo com cacheComponents
+// desabilitado globalmente, pois o loading.tsx em src/app/ cria um
+// boundary de streaming que herda para esta rota. Ver task-10-report.md.
+export const experimental_ppr = false;
+
 const getCachedMovie = cache(getMovie);
 
 type MoviePageProps = {
