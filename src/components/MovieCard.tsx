@@ -59,9 +59,11 @@ export function MovieCard({ movie, badge }: MovieCardProps) {
           </span>
         )}
 
-        <p className="absolute inset-x-0 bottom-0 translate-y-2 p-2 text-xs font-medium leading-snug text-[var(--foreground)] opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100">
-          {movie.title}
-        </p>
+        {movie.posterUrl && (
+          <p className="absolute inset-x-0 bottom-0 translate-y-2 p-2 text-xs font-medium leading-snug text-[var(--foreground)] opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100">
+            {movie.title}
+          </p>
+        )}
       </div>
     </Link>
   );
