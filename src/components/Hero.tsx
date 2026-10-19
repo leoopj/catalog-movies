@@ -23,7 +23,7 @@ export function Hero({ movie }: HeroProps) {
   );
 
   return (
-    <section className="relative flex min-h-[70vh] w-full items-end overflow-hidden">
+    <section className="relative flex min-h-[78vh] w-full items-end overflow-hidden sm:min-h-[88vh]">
       {movie.backdropUrl && (
         <Image
           src={movie.backdropUrl}
@@ -33,28 +33,35 @@ export function Hero({ movie }: HeroProps) {
           className="object-cover"
         />
       )}
-      <div className="absolute inset-0 bg-gradient-to-t from-[var(--background)] via-[var(--background)]/60 to-transparent" />
-      <div className="absolute inset-0 bg-gradient-to-r from-[var(--background)]/90 via-[var(--background)]/20 to-transparent" />
+      {/* bottom fade: pulls the image into the page */}
+      <div className="absolute inset-0 bg-gradient-to-t from-[var(--background)] via-[var(--background)]/55 to-transparent" />
+      {/* left fade: gives the text block a legible field */}
+      <div className="absolute inset-0 bg-gradient-to-r from-[var(--background)] via-[var(--background)]/35 to-transparent sm:via-[var(--background)]/25" />
+      {/* top fade: lets the sticky header sit on the image */}
+      <div className="absolute inset-0 bg-gradient-to-b from-[var(--background)]/70 via-transparent to-transparent" />
 
-      <div className="relative z-10 flex max-w-2xl flex-col gap-4 px-4 py-12 sm:px-8">
+      <div className="relative z-10 flex max-w-xl flex-col gap-5 px-4 pb-10 pt-24 sm:px-8 sm:pb-16">
         {movie.badge && (
-          <p className="text-sm font-semibold text-[var(--accent)]">
-            Em destaque · Disponível em {movie.badge.name}
+          <p className="flex items-center gap-2 text-sm font-medium text-[var(--accent)]">
+            <span className="h-px w-6 bg-[var(--accent)]" />
+            Em destaque · disponível em {movie.badge.name}
           </p>
         )}
 
-        <h1 className="text-3xl font-bold leading-tight text-[var(--foreground)] sm:text-5xl">
+        <h1 className="font-[family-name:var(--font-display)] text-4xl leading-[0.95] tracking-tight text-[var(--foreground)] sm:text-6xl">
           {movie.title}
         </h1>
 
-        <p className="text-sm text-[var(--foreground)]/80">{metaParts.join(" · ")}</p>
+        <p className="text-sm text-[var(--foreground)]/70">{metaParts.join("  ·  ")}</p>
 
-        <p className="line-clamp-3 max-w-xl text-[var(--foreground)]/90">{movie.overview}</p>
+        <p className="line-clamp-3 max-w-md text-[15px] leading-relaxed text-[var(--foreground)]/85">
+          {movie.overview}
+        </p>
 
         <div className="flex flex-wrap items-center gap-3 pt-2">
           <Link
             href={`/filme/${movieSlug(movie.id, movie.title)}`}
-            className="rounded-md bg-[var(--accent)] px-4 py-2 font-semibold text-black hover:opacity-90"
+            className="rounded bg-[var(--accent)] px-5 py-2.5 font-semibold text-black transition hover:brightness-110"
           >
             Ver detalhes
           </Link>

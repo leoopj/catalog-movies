@@ -20,7 +20,8 @@ export function MovieRail({ title, movies, seeAllHref, badge }: MovieRailProps) 
   return (
     <section className="space-y-3">
       <div className="flex items-center justify-between gap-3">
-        <h2 className="flex items-center gap-2 text-lg font-semibold text-[var(--foreground)]">
+        <h2 className="flex items-center gap-2.5 text-lg font-semibold text-[var(--foreground)]">
+          <span className="h-4 w-1 rounded-full bg-[var(--accent)]" aria-hidden />
           {badge?.logoUrl && (
             <Image
               src={badge.logoUrl}
@@ -36,9 +37,12 @@ export function MovieRail({ title, movies, seeAllHref, badge }: MovieRailProps) 
         {seeAllHref && (
           <Link
             href={seeAllHref}
-            className="text-sm text-[var(--accent)] hover:underline"
+            className="group/link flex items-center gap-1 text-sm text-[var(--foreground)]/70 transition hover:text-[var(--accent)]"
           >
             Ver todos
+            <span className="transition-transform group-hover/link:translate-x-0.5">
+              →
+            </span>
           </Link>
         )}
       </div>

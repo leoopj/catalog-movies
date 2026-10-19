@@ -4,19 +4,19 @@ import { SearchBox } from "./SearchBox";
 
 export function Header() {
   return (
-    <header className="sticky top-0 z-50 border-b border-white/10 bg-[var(--background)]/95 backdrop-blur">
-      <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-4 px-4 py-3">
+    <header className="sticky top-0 z-50 bg-gradient-to-b from-[var(--background)] via-[var(--background)]/80 to-transparent">
+      <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-4 px-4 py-4 sm:px-8">
         <Link
           href="/"
-          className="text-lg font-bold text-[var(--accent)] shrink-0"
+          className="shrink-0 font-[family-name:var(--font-display)] text-lg tracking-tight text-[var(--accent)]"
         >
           {SITE.name}
         </Link>
-        <nav className="flex items-center gap-4 text-sm">
-          <Link href="/" className="hover:text-[var(--accent)]">
+        <nav className="flex items-center gap-5 text-sm text-[var(--foreground)]/80">
+          <Link href="/" className="transition hover:text-[var(--foreground)]">
             Início
           </Link>
-          <Link href="/explorar" className="hover:text-[var(--accent)]">
+          <Link href="/explorar" className="transition hover:text-[var(--foreground)]">
             Explorar
           </Link>
         </nav>

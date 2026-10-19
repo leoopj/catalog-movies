@@ -12,13 +12,16 @@ export function MoreServices({ providers }: MoreServicesProps) {
 
   return (
     <section className="space-y-3">
-      <h2 className="text-lg font-semibold text-[var(--foreground)]">Mais serviços</h2>
+      <h2 className="flex items-center gap-2.5 text-lg font-semibold text-[var(--foreground)]">
+        <span className="h-4 w-1 rounded-full bg-[var(--accent)]" aria-hidden />
+        Mais serviços
+      </h2>
       <div className="flex flex-wrap gap-3">
         {providers.map((provider) => (
           <Link
             key={provider.id}
             href={`/explorar?servicos=${provider.id}`}
-            className="flex items-center gap-2 rounded-full bg-[var(--surface)] px-3 py-2 text-sm font-medium text-[var(--foreground)] hover:opacity-90"
+            className="flex items-center gap-2 rounded-full bg-[var(--surface)] px-3 py-2 text-sm font-medium text-[var(--foreground)] transition hover:bg-[var(--surface-raised)]"
           >
             {logoUrl(provider.logoPath) && (
               <Image

@@ -24,7 +24,7 @@ export function Trailer({ youtubeKey, label = "Trailer" }: TrailerProps) {
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="flex items-center gap-2 rounded-md bg-[var(--surface)] px-4 py-2 font-medium text-[var(--foreground)] hover:opacity-90"
+        className="flex items-center gap-2 rounded bg-white/10 px-5 py-2.5 font-semibold text-[var(--foreground)] backdrop-blur-sm transition hover:bg-white/20"
       >
         ▶ {label}
       </button>
