@@ -20,12 +20,12 @@ Permitir que o visitante crie uma conta com e-mail e senha e mantenha três list
 | URL das abas | Home com query string: `/?aba=favoritos`, `/?aba=assistidos`, `/?aba=assistir-depois`. |
 | Onde marcar | **Só na página de detalhes** do filme (três botões). |
 | Relação entre listas | Marcar **Assistido** remove de **Assistir depois**. Favorito é independente. Desmarcar Assistido não devolve o filme para Assistir depois. |
-| Fluxos de conta | Cadastro **com confirmação por e-mail**, login, sair. **Sem** "esqueci minha senha" nesta entrega. |
+| Fluxos de conta | Cadastro **sem confirmação por e-mail** (a conta é criada e o usuário já entra), login, sair. **Sem** "esqueci minha senha" nesta entrega. *(Revisado em 2026-10-18: a decisão inicial era com confirmação; o usuário optou por manter "Confirm email" desligado no Supabase.)* |
 | Arquitetura | Sessão em cookie via `@supabase/ssr`, Server Actions, **snapshot** do filme gravado no banco. |
 
 ### Fora do escopo
 
-Recuperação de senha, marcação pelos cards, login social, perfis públicos e compartilhamento de listas, exclusão de conta, SMTP próprio, teste E2E do fluxo logado.
+Confirmação de e-mail, recuperação de senha, marcação pelos cards, login social, perfis públicos e compartilhamento de listas, exclusão de conta, SMTP próprio, teste E2E do fluxo logado.
 
 ## 2. Configuração do Supabase (manual, documentada no README)
 
@@ -35,12 +35,10 @@ Recuperação de senha, marcação pelos cards, login social, perfis públicos e
 4. Em **Authentication → URL Configuration**:
    - Definir a **Site URL** com a URL de produção.
    - Adicionar às **Redirect URLs**: `http://localhost:3000/**` e `https://<dominio-vercel>/**`.
-5. Em **Authentication → Email Templates → Confirm signup**, trocar o link por:
-   `{{ .SiteURL }}/auth/confirmar?token_hash={{ .TokenHash }}&type=email`
-6. Manter **Confirm email** ligado (padrão).
-7. Cadastrar as mesmas variáveis de ambiente na Vercel.
+5. Em **Authentication → Sign In / Providers → Email**, manter **Confirm email desligado**: o cadastro cria a sessão na hora.
+6. Cadastrar as mesmas variáveis de ambiente na Vercel.
 
-**Aviso:** o e-mail embutido do Supabase tem limite baixo de envios por hora. Isso é suficiente para uso pessoal. Para tráfego real será preciso configurar um SMTP próprio, o que está fora do escopo.
+**Observação:** com a confirmação desligada, qualquer pessoa pode criar conta com um e-mail que não é dela. Isso é aceitável aqui, porque a conta só guarda listas de filmes.
 
 ### Variáveis de ambiente novas
 
@@ -117,17 +115,17 @@ Ficam fora do grupo `(com-loading)`.
 
 | Rota | Tipo | Comportamento |
 |---|---|---|
-| `/entrar` | página | Formulário de e-mail e senha. Lê `?proximo=` e `?erro=link-invalido`. Link para `/cadastro`. Usuário já logado é redirecionado para `/`. |
-| `/cadastro` | página | E-mail, senha (mínimo de 8) e confirmação. Após o envio, mostra "Enviamos um link de confirmação para *email*". A mesma mensagem aparece se o e-mail já existir, porque o Supabase não revela isso. |
-| `/auth/confirmar` | route handler `GET` | Recebe `token_hash` e `type`. Chama `verifyOtp`. Em caso de sucesso, redireciona para `/`. Em caso de falha, redireciona para `/entrar?erro=link-invalido`. |
+| `/entrar` | página | Formulário de e-mail e senha. Lê `?proximo=`. Link para `/cadastro`, repassando o `proximo`. Usuário já logado é redirecionado para `/`. |
+| `/cadastro` | página | E-mail, senha (mínimo de 8) e confirmação de senha. Lê `?proximo=`. Em caso de sucesso, o usuário já fica logado e é redirecionado. Usuário já logado é redirecionado para `/`. |
 
 ### Server Actions (`src/app/auth/actions.ts`)
 
 - `entrar(estadoAnterior, formData)`: `signInWithPassword`. Em caso de sucesso, faz `redirect(proximoSeguro)`. Em caso de erro, retorna `{ erro: string }`.
 - `cadastrar(estadoAnterior, formData)`:
   - Valida os campos no servidor: e-mail não vazio, senha com 8 ou mais caracteres e confirmação igual.
-  - Chama `signUp` com `emailRedirectTo` apontando para `${NEXT_PUBLIC_SITE_URL}/auth/confirmar`.
-  - Retorna `{ enviadoPara: email }` ou `{ erro }`.
+  - Chama `signUp`. Com a confirmação desligada, a resposta já traz a sessão e os cookies são gravados.
+  - Em caso de sucesso, faz `redirect(proximoSeguro)`. Em caso de erro, retorna `{ erro }`.
+  - Se a resposta vier **sem sessão** (por exemplo, se alguém religar a confirmação no painel), retorna `{ erro: "Conta criada. Confirme seu e-mail antes de entrar." }`.
 - `sair()`: `signOut` e depois `redirect("/")`.
 
 Os formulários usam `useActionState` e funcionam também sem JavaScript.
@@ -138,6 +136,7 @@ Os formulários usam `useActionState` e funcionam também sem JavaScript.
 - `traduzirErroAuth(erro)`: converte o código do Supabase em mensagem em português:
   - `invalid_credentials` → "E-mail ou senha incorretos."
   - `email_not_confirmed` → "Confirme seu e-mail antes de entrar. Verifique sua caixa de entrada."
+  - `user_already_exists` → "Já existe uma conta com este e-mail. Tente entrar."
   - `weak_password` → "Senha muito fraca. Use pelo menos 8 caracteres."
   - `over_email_send_rate_limit` → "Muitas tentativas. Aguarde alguns minutos."
   - Qualquer outro código → "Não foi possível concluir. Tente novamente."
@@ -252,11 +251,10 @@ Fica em `src/app/filme/actions.ts`.
 
 | Situação | Comportamento |
 |---|---|
-| Variáveis do Supabase ausentes | `getCurrentUser()` retorna `null`, o header mostra "Entrar" e as páginas `/entrar` e `/cadastro` mostram "Login indisponível no momento". O catálogo continua funcionando. |
+| Variáveis do Supabase ausentes | `getCurrentUser()` retorna `null`, o header mostra "Entrar", os botões do filme se comportam como para um visitante deslogado, e as páginas `/entrar` e `/cadastro` mostram "Login indisponível no momento". O catálogo continua funcionando. |
 | Supabase fora do ar na leitura | As abas mostram uma mensagem de erro amigável e os botões do detalhe não aparecem. O erro é registrado com `console.error` no servidor. |
 | Falha ao salvar marcação | O estado otimista é revertido e aparece uma mensagem curta. |
 | Sessão expirada | A action retorna `nao-autenticado` e o usuário é levado a `/entrar?proximo=`. |
-| Link de confirmação inválido ou expirado | Redireciona para `/entrar?erro=link-invalido` com a mensagem "Link inválido ou expirado. Tente entrar ou crie a conta novamente." |
 | `proximo` malicioso | `proximoSeguro` substitui o valor por `/`. |
 
 ## 9. Testes
@@ -295,7 +293,6 @@ Fica em `src/app/filme/actions.ts`.
 - `src/lib/marks.ts`
 - `src/lib/nav.ts`
 - `src/app/auth/actions.ts`
-- `src/app/auth/confirmar/route.ts`
 - `src/app/entrar/page.tsx`
 - `src/app/cadastro/page.tsx`
 - `src/app/filme/actions.ts`

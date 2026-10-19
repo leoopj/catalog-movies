@@ -60,7 +60,7 @@
 - `src/proxy.ts`: `export async function proxy(request)` chama `updateSession`.
   - `config.matcher`: `["/((?!_next/static|_next/image|favicon.ico|robots.txt|sitemap.xml|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)"]`
 - `fakeSupabase(respostas)` (`src/test/supabaseFake.ts`): fake encadeável para as Tarefas 2, 4 e 7.
-  - Implementa os métodos `from`, `select`, `eq`, `not`, `order`, `limit`, `maybeSingle`, `upsert`, `delete` e `auth.{getUser, signInWithPassword, signUp, signOut, verifyOtp}`.
+  - Implementa os métodos `from`, `select`, `eq`, `not`, `order`, `limit`, `maybeSingle`, `upsert`, `delete` e `auth.{getUser, signInWithPassword, signUp, signOut}`.
   - Registra cada chamada em `fake.chamadas: { metodo: string; args: unknown[] }[]`.
   - Cada operação terminal (await da cadeia ou chamada `auth.*`) resolve a próxima resposta configurada em `respostas` (fila de `{ data?, error?, count? }`).
 
@@ -96,7 +96,7 @@
 
   - Copiar o SQL da seção 3 da spec, sem alterações, para `0001_user_movies.sql`.
   - Acrescentar as duas variáveis ao `.env.example`.
-  - No README, criar a seção "Configurando o Supabase" com os sete passos da seção 2 da spec, o aviso sobre limite de e-mail e a menção às variáveis na Vercel.
+  - No README, criar a seção "Configurando o Supabase" com os seis passos da seção 2 da spec, incluindo "Confirm email" desligado e as variáveis na Vercel.
 
 - [ ] **Passo 7: verificar o build e a suíte**
 
@@ -108,20 +108,20 @@
 
 ---
 
-### Tarefa 2: Autenticação (helpers, actions, telas `/entrar` e `/cadastro`, `/auth/confirmar`)
+### Tarefa 2: Autenticação (helpers, actions, telas `/entrar` e `/cadastro`)
+
+Cadastro **sem confirmação por e-mail**: `signUp` já devolve a sessão. Não existe rota `/auth/confirmar`.
 
 **Arquivos:**
 - Criar:
   - `src/lib/auth.ts`
   - `src/app/auth/actions.ts`
-  - `src/app/auth/confirmar/route.ts`
   - `src/components/AuthForm.tsx`
   - `src/app/entrar/page.tsx`
   - `src/app/cadastro/page.tsx`
 - Testar:
   - `src/lib/auth.test.ts`
   - `src/app/auth/actions.test.ts`
-  - `src/app/auth/confirmar/route.test.ts`
   - `src/components/AuthForm.test.tsx`
 
 **Interfaces:**
@@ -132,10 +132,11 @@
   - `normalizarEmail(valor: unknown): string`: `String(valor ?? "").trim().toLowerCase()`.
   - `type EstadoEntrar = { erro?: string }`
   - `entrar(prev: EstadoEntrar, form: FormData): Promise<EstadoEntrar>`, com os campos `email`, `senha` e `proximo`.
-  - `type EstadoCadastro = { erro?: string; enviadoPara?: string }`
-  - `cadastrar(prev: EstadoCadastro, form: FormData): Promise<EstadoCadastro>`, com os campos `email`, `senha` e `confirmacao`.
+  - `type EstadoCadastro = { erro?: string }`
+  - `cadastrar(prev: EstadoCadastro, form: FormData): Promise<EstadoCadastro>`, com os campos `email`, `senha`, `confirmacao` e `proximo`.
+    - Em caso de sucesso com sessão, faz `redirect(proximoSeguro(proximo))`.
+    - Se `signUp` não devolver `session`, retorna `{ erro: "Conta criada. Confirme seu e-mail antes de entrar." }`.
   - `sair(): Promise<void>`
-  - `GET(request: NextRequest)` em `confirmar/route.ts`.
 
 **Textos de validação** (fixados aqui porque a spec não traz):
 - E-mail vazio: "Informe seu e-mail."
@@ -147,7 +148,7 @@
   - `proximoSeguro`:
     - `"/filme/1-x"` e `"/?aba=favoritos"` são mantidos.
     - `"//evil.com"`, `"/\\evil.com"`, `"https://evil.com"`, `""`, `undefined` e `123` viram `"/"`.
-  - `traduzirErroAuth`: cada um dos quatro códigos da spec produz o texto exato. `{ code: "x" }` e `null` produzem "Não foi possível concluir. Tente novamente."
+  - `traduzirErroAuth`: cada um dos cinco códigos da spec (incluindo `user_already_exists`) produz o texto exato. `{ code: "x" }` e `null` produzem "Não foi possível concluir. Tente novamente."
   - `normalizarEmail`: `"  Leo@Exemplo.COM "` vira `"leo@exemplo.com"`.
 
 - [ ] **Passo 2: escrever os testes de `actions.test.ts`**
@@ -158,43 +159,41 @@
   - `"entrar com credenciais inválidas retorna erro traduzido"`: `{ erro: "E-mail ou senha incorretos." }`.
   - `"entrar sem config retorna Login indisponível no momento."`
   - `"cadastrar valida senha curta e confirmação"`: retorna os textos de validação acima, sem chamar `signUp`.
-  - `"cadastrar envia emailRedirectTo e retorna enviadoPara"`: `options.emailRedirectTo` deve ser `${NEXT_PUBLIC_SITE_URL}/auth/confirmar`.
+  - `"cadastrar com sessão normaliza e-mail e redireciona para proximo seguro"`.
+  - `"cadastrar com e-mail existente retorna Já existe uma conta com este e-mail. Tente entrar."`: o fake responde `{ error: { code: "user_already_exists" } }`.
+  - `"cadastrar sem sessão na resposta retorna Conta criada. Confirme seu e-mail antes de entrar."`
   - `"sair chama signOut e redireciona para /"`.
 
-- [ ] **Passo 3: escrever os testes de `route.test.ts`**
-  - `"token válido redireciona para /"`: `verifyOtp` chamado com `{ token_hash, type: "email" }`. Resposta 307 com `Location` terminando em `/`.
-  - `"sem token ou verifyOtp com erro redireciona para /entrar?erro=link-invalido"`.
+- [ ] **Passo 3: escrever os testes de `AuthForm.test.tsx`**
 
-- [ ] **Passo 4: escrever os testes de `AuthForm.test.tsx`**
-
-  `AuthForm` é client e recebe `{ modo: "entrar" | "cadastro"; action; proximo?: string; erroInicial?: string; indisponivel?: boolean }`.
+  `AuthForm` é client e recebe `{ modo: "entrar" | "cadastro"; action; proximo?: string; indisponivel?: boolean }`.
   - `"modo cadastro mostra campo de confirmação"`.
   - `"exibe erro do estado em role=alert"`.
-  - `"após cadastro mostra Enviamos um link de confirmação para <email>"`.
+  - `"envia proximo em campo hidden e o link para a outra tela repassa ?proximo="`.
   - `"indisponivel desabilita o envio e mostra Login indisponível no momento."`
 
-- [ ] **Passo 5: rodar e ver falhar**
+- [ ] **Passo 4: rodar e ver falhar**
 
   `npx vitest run src/lib/auth src/app/auth src/components/AuthForm` falha porque os módulos não existem.
 
-- [ ] **Passo 6: implementar `auth.ts`, as actions, o route handler e o `AuthForm`**
+- [ ] **Passo 5: implementar `auth.ts`, as actions e o `AuthForm`**
   - O `AuthForm` usa `useActionState`. Os campos têm `name` igual aos das actions, `type="email"` e `autoComplete`.
   - Visual: card centralizado em `--surface`, conforme o mockup 5 de `listas-mockup.html`.
 
-- [ ] **Passo 7: implementar as páginas `/entrar` e `/cadastro`**
+- [ ] **Passo 6: implementar as páginas `/entrar` e `/cadastro`**
   - São Server Components.
   - Se `getCurrentUser()` retornar usuário, fazem `redirect("/")`.
-  - `/entrar` lê `searchParams.proximo` e `searchParams.erro`. Com `erro=link-invalido`, passa `erroInicial` com o texto da tabela de erros da spec.
+  - As duas leem `searchParams.proximo` e o repassam ao `AuthForm`.
   - Passam `indisponivel={supabaseConfig() === null}`.
   - Metadados: `title` "Entrar · CineStream" e "Criar conta · CineStream", ambos com `robots: { index: false }`.
 
-- [ ] **Passo 8: rodar e ver passar**
+- [ ] **Passo 7: rodar e ver passar**
 
   `npx vitest run` passa por completo.
 
-- [ ] **Passo 9: commit**
+- [ ] **Passo 8: commit**
 
-  `feat: cadastro com confirmação por e-mail, login e logout`
+  `feat: cadastro, login e logout com e-mail e senha`
 
 ---
 
@@ -523,7 +522,7 @@
 - [ ] **Passo 4: verificação manual com o Supabase real**
 
   O usuário configura o `.env.local` e roda a migração (README). Depois:
-  1. Cadastrar uma conta, confirmar pelo e-mail e entrar.
+  1. Cadastrar uma conta e conferir que já entra logado; sair e entrar de novo.
   2. Marcar um filme como Favorito e Assistir depois.
   3. Marcar Assistido e conferir que Assistir depois desliga.
   4. Conferir as três abas.
