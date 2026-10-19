@@ -44,6 +44,31 @@ e TypeScript, consumindo a API do TMDB.
    npm install
    ```
 
+## Configurando o Supabase
+
+O login e as listas do usuário (Favoritos, Assistidos, Assistir depois) usam o
+[Supabase](https://supabase.com). Sem as variáveis abaixo o app continua funcionando como catálogo
+público, e a tela de login mostra "Login indisponível no momento."
+
+1. Crie um projeto em supabase.com na região **South America (São Paulo)**.
+2. Em **Project Settings → API**, copie a **Project URL** e a **Publishable key** (`anon` em
+   projetos antigos) para o `.env.local`:
+
+   ```bash
+   NEXT_PUBLIC_SUPABASE_URL=https://seu-projeto.supabase.co
+   NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=sua_publishable_key
+   ```
+
+   A secret key do Supabase **não** é usada pelo app.
+3. Execute `supabase/migrations/0001_user_movies.sql` no **SQL Editor**.
+4. Em **Authentication → URL Configuration**, defina a **Site URL** com a URL de produção e
+   adicione às **Redirect URLs**: `http://localhost:3000/**` e `https://<dominio-vercel>/**`.
+5. Em **Authentication → Sign In / Providers → Email**, mantenha **Confirm email desligado**: o
+   cadastro cria a sessão na hora. Com isso, qualquer pessoa pode criar conta com um e-mail que
+   não é dela, o que é aceitável porque a conta só guarda listas de filmes.
+6. Cadastre as mesmas variáveis de ambiente na Vercel (**Project Settings → Environment
+   Variables**).
+
 ## Rodando o projeto
 
 ```bash
